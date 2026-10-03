@@ -127,8 +127,7 @@ st.caption("Fill in your details, then download an ATS-friendly PDF.")
 
 st.info(
     "📱 **Works on phone and PC.** Just fill in the boxes. Everything you type "
-    "is saved when you tap **Generate CV** at the bottom, so there is no need "
-    "to press Enter or Ctrl + Enter."
+    "is saved when you tap **Generate CV** at the bottom."
 )
 
 
