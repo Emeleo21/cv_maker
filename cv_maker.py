@@ -120,103 +120,116 @@ def build_pdf(data, template="Classic (black)", accent="#1F4E79"):
 
 
 # ---------- STREAMLIT APP ----------
-st.set_page_config(page_title="CV Maker", page_icon="📄")
-st.title("📄 CV Maker")
+st.set_page_config(page_title="CV Maker by LeoPython", page_icon="📄")
+st.title("📄 CV Maker
+by LeoPython")
 st.caption("Fill in your details, then download an ATS-friendly PDF.")
 
 
-st.warning(
-    "⚠️ **Important:** after typing in a box, press **Enter** (or click outside "
-    "the box) so your details are saved. For the larger text boxes "
-    "(summary and achievements), press **Ctrl + Enter**. Anything you don't "
-    "confirm may be missing from your CV."
+st.info(
+    "📱 **Works on phone and PC.** Just fill in the boxes. Everything you type "
+    "is saved when you tap **Generate CV** at the bottom."
 )
 
 
 with st.expander("📖 How to use this CV Maker", expanded=False):
     st.markdown(
         """
-1. **Fill in each section** from top to bottom.
-2. **Press Enter after every entry** so it is saved. In the big boxes
-   (summary and achievements) press **Ctrl + Enter** instead, because Enter
-   only starts a new line there.
-3. **Skills:** type them separated by commas, e.g. `Excel, Communication`, then press Enter.
-4. **Achievements:** write one achievement per line, starting with an action
-   word and including numbers where you can (e.g. *Handled 50+ customer calls daily*).
-5. **Choose a template** (Classic or Modern). For Modern you can pick your own colour.
-6. Click **Generate CV**, then **Download PDF**.
-7. Open the PDF and check that every detail appears. If something is missing,
-   go back, press Enter in that box, and generate again.
+1. **Step 1:** choose how many jobs and education entries you want, and pick a template.
+2. **Step 2:** fill in the boxes from top to bottom. You can type freely.
+3. **Skills:** separate them with commas, e.g. `Excel, Communication`.
+4. **Achievements:** write one per line, starting with an action word and
+   including numbers where you can (e.g. *Handled 50+ customer calls daily*).
+5. Tap **Generate CV** at the bottom, then **Download PDF**.
+6. Open the PDF and check that every detail appears. If you want to change
+   something, edit the box and tap **Generate CV** again.
 """
     )
 
 
-st.subheader("Personal details")
-name = st.text_input("Full name")
-c1, c2 = st.columns(2)
-email = c1.text_input("Email")
-phone = c2.text_input("Phone")
-location = c1.text_input("Location (e.g. Lagos, Nigeria)")
-linkedin = c2.text_input("LinkedIn / portfolio (optional)")
-
-
-st.subheader("Professional summary")
-summary = st.text_area("2-4 sentences about you (press Ctrl + Enter to save)", height=110)
-
-
-st.subheader("Skills")
-skills = st.text_input("Separate with commas",
-                       placeholder="Customer service, Excel, Communication")
-
-
-st.subheader("Work experience")
-n_jobs = st.number_input("Number of jobs", min_value=0, max_value=8, value=1, step=1)
-jobs = []
-for i in range(int(n_jobs)):
-    with st.expander(f"Job {i + 1}", expanded=(i == 0)):
-        title = st.text_input("Job title", key=f"title{i}")
-        company = st.text_input("Company", key=f"company{i}")
-        d1, d2 = st.columns(2)
-        dates = d1.text_input("Dates (e.g. Jan 2022 - Present)", key=f"dates{i}")
-        jloc = d2.text_input("Location", key=f"jloc{i}")
-        bullets = st.text_area("Achievements (one per line, press Ctrl + Enter to save)",
-                               key=f"bullets{i}", height=120)
-        jobs.append({"title": title, "company": company, "dates": dates,
-                     "location": jloc, "bullets": bullets})
-
-
-st.subheader("Education")
-n_edu = st.number_input("Number of entries", min_value=0, max_value=5, value=1, step=1)
-edus = []
-for i in range(int(n_edu)):
-    with st.expander(f"Education {i + 1}", expanded=(i == 0)):
-        degree = st.text_input("Degree / certificate", key=f"degree{i}")
-        school = st.text_input("School", key=f"school{i}")
-        edates = st.text_input("Dates", key=f"edates{i}")
-        edus.append({"degree": degree, "school": school, "dates": edates})
-
-
-st.divider()
-st.subheader("Template")
-template = st.radio("Choose a style", TEMPLATES, horizontal=True)
+# ----- Step 1: setup (these save as soon as you tap a choice) -----
+st.subheader("Step 1: Choose your setup")
+n_jobs = st.selectbox("How many jobs do you want to list?", list(range(0, 9)), index=1)
+n_edu = st.selectbox("How many education entries?", list(range(0, 6)), index=1)
+template = st.radio("Template", TEMPLATES, horizontal=True)
 accent = "#1F4E79"
 if template.startswith("Modern"):
     accent = st.color_picker("Accent colour", "#1F4E79")
 
 
-if st.button("Generate CV", type="primary"):
+# ----- Step 2: the form (everything is saved when you tap Generate CV) -----
+st.subheader("Step 2: Fill in your details")
+with st.form("cv_form"):
+    st.markdown("**Personal details**")
+    name = st.text_input("Full name")
+    c1, c2 = st.columns(2)
+    email = c1.text_input("Email")
+    phone = c2.text_input("Phone")
+    location = c1.text_input("Location (e.g. Lagos, Nigeria)")
+    linkedin = c2.text_input("LinkedIn / portfolio (optional)")
+
+
+    st.markdown("**Professional summary**")
+    summary = st.text_area("2-4 sentences about you", height=110)
+
+
+    st.markdown("**Skills**")
+    skills = st.text_input("Separate with commas",
+                           placeholder="Customer service, Excel, Communication")
+
+
+    jobs = []
+    if n_jobs:
+        st.markdown("**Work experience**")
+    for i in range(int(n_jobs)):
+        with st.expander(f"Job {i + 1}", expanded=(i == 0)):
+            title = st.text_input("Job title", key=f"title{i}")
+            company = st.text_input("Company", key=f"company{i}")
+            d1, d2 = st.columns(2)
+            dates = d1.text_input("Dates (e.g. Jan 2022 - Present)", key=f"dates{i}")
+            jloc = d2.text_input("Location", key=f"jloc{i}")
+            bullets = st.text_area("Achievements (one per line)",
+                                   key=f"bullets{i}", height=120)
+            jobs.append({"title": title, "company": company, "dates": dates,
+                         "location": jloc, "bullets": bullets})
+
+
+    edus = []
+    if n_edu:
+        st.markdown("**Education**")
+    for i in range(int(n_edu)):
+        with st.expander(f"Education {i + 1}", expanded=(i == 0)):
+            degree = st.text_input("Degree / certificate", key=f"degree{i}")
+            school = st.text_input("School", key=f"school{i}")
+            edates = st.text_input("Dates", key=f"edates{i}")
+            edus.append({"degree": degree, "school": school, "dates": edates})
+
+
+    submitted = st.form_submit_button("Generate CV", type="primary")
+
+
+if submitted:
     if not name.strip():
         st.error("Please enter your full name.")
+        st.session_state.pop("cv_pdf", None)
     else:
-        pdf_bytes = build_pdf({
+        st.session_state["cv_pdf"] = build_pdf({
             "name": name.strip(), "email": email.strip(), "phone": phone.strip(),
             "location": location.strip(), "linkedin": linkedin.strip(),
             "summary": summary, "skills": skills, "jobs": jobs, "edus": edus,
         }, template=template, accent=accent)
-        st.success("Your CV is ready!")
-        st.download_button("⬇️ Download PDF", data=pdf_bytes,
-                           file_name=f"{name.strip().replace(' ', '_')}_CV.pdf",
-                           mime="application/pdf")
+        st.session_state["cv_filename"] = f"{name.strip().replace(' ', '_')}_CV.pdf"
+
+
+# The download button sits outside the form (Streamlit does not allow it inside)
+if "cv_pdf" in st.session_state:
+    st.success("Your CV is ready!")
+    st.download_button("⬇️ Download PDF", data=st.session_state["cv_pdf"],
+                       file_name=st.session_state["cv_filename"],
+                       mime="application/pdf")
+    st.caption("Changed something? Edit the boxes and tap Generate CV again.")
+
+
 
 
 
