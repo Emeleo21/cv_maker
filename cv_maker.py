@@ -121,14 +121,14 @@ def build_pdf(data, template="Classic (black)", accent="#1F4E79"):
 
 # ---------- STREAMLIT APP ----------
 st.set_page_config(page_title="CV Maker by LeoPython", page_icon="📄")
-st.title("📄 CV Maker
-by LeoPython")
+st.title("📄 CV Maker")
 st.caption("Fill in your details, then download an ATS-friendly PDF.")
 
 
 st.info(
     "📱 **Works on phone and PC.** Just fill in the boxes. Everything you type "
-    "is saved when you tap **Generate CV** at the bottom."
+    "is saved when you tap **Generate CV** at the bottom, so there is no need "
+    "to press Enter or Ctrl + Enter."
 )
 
 
