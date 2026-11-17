@@ -85,8 +85,8 @@ def build_pdf(data, template="Classic (black)", accent="#1F4E79"):
     if data["skills"].strip():
         story += section("Skills")
         skills = [s.strip() for s in data["skills"].split(",") if s.strip()]
-        story.append(P(", ".join(skills), body_style))
-
+        for s in skills:
+            story.append(P(s, bullet_style, bulletText="•"))
 
     jobs = [j for j in data["jobs"] if j["title"] or j["company"]]
     if jobs:
